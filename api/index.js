@@ -3,10 +3,12 @@ const express = require("express");
 
 const { contactUsRoutes } = require("../routes/contactUs.routes");
 const { InquiryRoutes } = require("../routes/Inquiry.routes");
+const authRoutes = require("../routes/auth");
 
 const app = express();
 const cors = require("cors");
 const { handleDbConnection } = require("../connection");
+const { ZodiacRoutes } = require("../routes/zodiacPredication.routes");
 
 // env variables
 const PORT = 3000;
@@ -21,12 +23,13 @@ app.use(express.urlencoded({ extended: false }));
 
 // DB Connection
 
-handleDbConnection(dbConnectUrl).catch((err) =>
+handleDbConnection(dbConnectUrl, app, PORT).catch((err) =>
   console.error("Failed to connect to MongoDB:", err.message)
 );
 // routes
 app.use("/api", contactUsRoutes);
 app.use("/api", InquiryRoutes);
+app.use("/api", ZodiacRoutes);
+app.use("/api/auth", authRoutes);
 
 //server
-app.listen(PORT, () => console.log(`app listening on port ${PORT}`));
